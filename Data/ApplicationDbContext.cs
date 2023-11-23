@@ -6,6 +6,9 @@ namespace ParkingTrackerAPI.Data
     public class ApplicationDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<Lot> Lots { get; set; }
+        public DbSet<Visit> Visits { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
@@ -18,6 +21,8 @@ namespace ParkingTrackerAPI.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+            modelBuilder.Entity<Vehicle>()
+                .HasAlternateKey(v => new { v.PlateNumber, v.PlateRegion });
 
             base.OnModelCreating(modelBuilder);
         }
