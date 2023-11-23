@@ -1,10 +1,10 @@
-using System.ComponentModel.DataAnnotations;
 
 namespace ParkingTrackerAPI.Models
 {
     public class Lot
     {
-        [Key]
+        public int LotId { get; set; }
+
         public string LotCode { get; set; } = null!;
 
         public string Name { get; set; } = null!;

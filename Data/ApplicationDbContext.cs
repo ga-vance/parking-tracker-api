@@ -21,8 +21,12 @@ namespace ParkingTrackerAPI.Data
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
+
             modelBuilder.Entity<Vehicle>()
                 .HasAlternateKey(v => new { v.PlateNumber, v.PlateRegion });
+
+            modelBuilder.Entity<Lot>()
+                .HasAlternateKey(l => l.LotCode);
 
             base.OnModelCreating(modelBuilder);
         }
