@@ -14,7 +14,7 @@ namespace ParkingTrackerAPI.Models
 
         public string Password { get; set; } = null!;
 
-        public bool IsAdmin { get; set; }
+        public bool IsAdmin { get; set; } = false;
 
         // Navigation
         public ICollection<Visit> Visits { get; } = new List<Visit>();
