@@ -1,3 +1,4 @@
+using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
 using ParkingTrackerAPI.Models;
 
@@ -15,6 +16,7 @@ namespace ParkingTrackerAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Seed();
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.UserName)
                 .IsUnique();
@@ -29,6 +31,63 @@ namespace ParkingTrackerAPI.Data
                 .HasAlternateKey(l => l.LotCode);
 
             base.OnModelCreating(modelBuilder);
+        }
+
+
+    }
+    public static class ModelBuilderExtensions
+    {
+        public static void Seed(this ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Lot>().HasData(
+                new Lot
+                {
+                    LotId = 1,
+                    LotCode = "STRCH",
+                    Name = "Strathcona Community Hospital",
+                    City = "Sherwood Park"
+                },
+                new Lot
+                {
+                    LotId = 2,
+                    LotCode = "LCH",
+                    Name = "Leduc Community Hospital",
+                    City = "Leduc"
+                },
+                new Lot
+                {
+                    LotId = 3,
+                    LotCode = "NECHC",
+                    Name = "Northeast Community Health Centre",
+                    City = "Edmonton"
+                },
+                new Lot
+                {
+                    LotId = 4,
+                    LotCode = "EEHC",
+                    Name = "East Edmonton Health Centre",
+                    City = "Edmonton"
+                },
+                new Lot
+                {
+                    LotId = 5,
+                    LotCode = "AHE",
+                    Name = "Alberta Hospital Edmonton",
+                    City = "Edmonton"
+                }
+            );
+            modelBuilder.Entity<User>().HasData(
+                new User
+                {
+                    UserId = 1,
+                    UserName = "admin",
+                    Email = "",
+                    FirstName = "admin",
+                    LastName = "admin",
+                    PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin"),
+                    IsAdmin = true
+                }
+            );
         }
     }
 }
