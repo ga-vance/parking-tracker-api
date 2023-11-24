@@ -6,6 +6,6 @@ namespace ParkingTrackerAPI.Dtos.User
 
         public string UserName { get; set; } = null!;
 
-        public bool IsAdmin { get; set; } = false;
+        public bool IsAdmin { get; set; }
     }
 }

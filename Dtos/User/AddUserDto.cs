@@ -10,6 +10,6 @@ namespace ParkingTrackerAPI.Dtos.User
 
         public required string Password { get; set; }
 
-        public required bool IsAdmin { get; set; } = false;
+        public bool IsAdmin { get; set; } = false;
     }
 }
