@@ -42,7 +42,19 @@ namespace ParkingTrackerAPI.Controllers
             {
                 return Ok(response);
             }
-            return BadRequest(response.Message);
+            return BadRequest(response);
+        }
+
+        [HttpPatch]
+        public async Task<ActionResult<ServiceResponse<GetUserDto>>> UpdateUser(UpdateUserDto updatedUser)
+        {
+            ServiceResponse<GetUserDto> response = await _userService.UpdateUser(updatedUser);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+
         }
 
         [HttpDelete("{Id}")]

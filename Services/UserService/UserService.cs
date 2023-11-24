@@ -78,6 +78,40 @@ namespace ParkingTrackerAPI.Services.UserService
             return serviceResponse;
         }
 
+        public async Task<ServiceResponse<GetUserDto>> UpdateUser(UpdateUserDto updatedUser)
+        {
+            var serviceResponse = new ServiceResponse<GetUserDto>();
+            var user = await _context.Users.FindAsync(updatedUser.UserId);
+            if (user is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Not Found";
+                return serviceResponse;
+            }
+
+            if (!IsValidEmail(updatedUser.Email))
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Invalid email address";
+                return serviceResponse;
+            }
+            // Validate unique email
+            var checkUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == updatedUser.Email.ToLower());
+            if (checkUser is not null)
+            {
+                serviceResponse.Message = "Please enter a unique email address";
+                serviceResponse.Success = false;
+                return serviceResponse;
+            }
+
+            user.FirstName = updatedUser.FirstName.ToLower();
+            user.LastName = updatedUser.LastName.ToLower();
+            user.Email = updatedUser.Email.ToLower();
+            user.IsAdmin = updatedUser.IsAdmin;
+            await _context.SaveChangesAsync();
+            serviceResponse.Data = _mapper.Map<GetUserDto>(user);
+            return serviceResponse;
+        }
         public async Task<ServiceResponse<GetUserDto>> DeleteUser(int Id)
         {
             var serviceResponse = new ServiceResponse<GetUserDto>();

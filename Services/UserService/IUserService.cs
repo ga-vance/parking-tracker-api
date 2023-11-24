@@ -13,5 +13,7 @@ namespace ParkingTrackerAPI.Services.UserService
 
         Task<ServiceResponse<GetUserDto>> GetUserById(int Id);
 
+        Task<ServiceResponse<GetUserDto>> UpdateUser(UpdateUserDto updatedUser);
+
     }
 }

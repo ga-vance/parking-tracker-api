@@ -10,6 +10,7 @@ namespace ParkingTrackerAPI
         {
             CreateMap<AddUserDto, User>();
             CreateMap<User, GetUserDto>();
+            CreateMap<UpdateUserDto, User>();
         }
     }
 }
