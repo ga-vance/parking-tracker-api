@@ -23,7 +23,6 @@ namespace ParkingTrackerAPI.Services.UserService
         {
             var serviceResponse = new ServiceResponse<GetUserDto>();
             var user = _mapper.Map<User>(newUser);
-            string username = user.FirstName[0] + "." + newUser.LastName;
             // Validate password length
             if (newUser.Password.Length < 8)
             {
@@ -38,7 +37,7 @@ namespace ParkingTrackerAPI.Services.UserService
                 return serviceResponse;
             }
             // Validate unique email
-            var checkUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
+            var checkUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email.ToLower());
             if (checkUser is not null)
             {
                 serviceResponse.Message = "Please enter a unique email address";
@@ -46,15 +45,16 @@ namespace ParkingTrackerAPI.Services.UserService
                 return serviceResponse;
             }
             // Generate Username to ensure uniqueness
+            string username = (user.FirstName[0] + "." + newUser.LastName).ToLower();
             List<User> matchingUsers = await _context.Users.Where(u => u.UserName.Contains(username)).ToListAsync();
             if (matchingUsers.Count >= 1)
             {
                 username += matchingUsers.Count;
             }
-            user.UserName = username.ToLower();
-            user.FirstName.ToLower();
-            user.LastName.ToLower();
-            user.Email.ToLower();
+            user.UserName = username;
+            user.FirstName = user.FirstName.ToLower();
+            user.LastName = user.LastName.ToLower();
+            user.Email = user.Email.ToLower();
 
             // Add password hashing
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
@@ -142,10 +142,12 @@ namespace ParkingTrackerAPI.Services.UserService
             }
             catch (RegexMatchTimeoutException e)
             {
+                Console.WriteLine(e);
                 return false;
             }
             catch (ArgumentException e)
             {
+                Console.WriteLine(e);
                 return false;
             }
 
