@@ -29,5 +29,16 @@ namespace ParkingTrackerAPI.Controllers
                 return BadRequest(response.Message);
             }
         }
+
+        [HttpDelete("{Id}")]
+        public async Task<ActionResult<ServiceResponse<GetUserDto>>> DeleteUser(int Id)
+        {
+            var response = await _userService.DeleteUser(Id);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
     }
 }

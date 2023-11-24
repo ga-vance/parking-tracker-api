@@ -65,5 +65,31 @@ namespace ParkingTrackerAPI.Services.UserService
 
             return serviceResponse;
         }
+
+        public async Task<ServiceResponse<GetUserDto>> DeleteUser(int Id)
+        {
+            var serviceResponse = new ServiceResponse<GetUserDto>();
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == Id);
+            if (user is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "No user found";
+                return serviceResponse;
+            }
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            serviceResponse.Data = _mapper.Map<GetUserDto>(user);
+            return serviceResponse;
+        }
+
+        // public async Task<ServiceResponse<List<GetUserDto>>> GetAllUsers()
+        // {
+        //     throw new NotImplementedException();
+        // }
+
+        // public async Task<ServiceResponse<GetUserDto>> GetUserById(int Id)
+        // {
+        //     throw new NotImplementedException();
+        // }
     }
 }
