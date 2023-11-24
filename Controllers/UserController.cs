@@ -16,6 +16,24 @@ namespace ParkingTrackerAPI.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers()
+        {
+            ServiceResponse<List<GetUserDto>> serviceResponse = await _userService.GetAllUsers();
+            return Ok(serviceResponse);
+        }
+
+        [HttpGet("{Id}")]
+        public async Task<ActionResult<ServiceResponse<GetUserDto>>> GetUserById(int Id)
+        {
+            ServiceResponse<GetUserDto> response = await _userService.GetUserById(Id);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
         [HttpPost("register")]
         public async Task<ActionResult<ServiceResponse<GetUserDto>>> AddUser(AddUserDto newUser)
         {
@@ -24,16 +42,13 @@ namespace ParkingTrackerAPI.Controllers
             {
                 return Ok(response);
             }
-            else
-            {
-                return BadRequest(response.Message);
-            }
+            return BadRequest(response.Message);
         }
 
         [HttpDelete("{Id}")]
         public async Task<ActionResult<ServiceResponse<GetUserDto>>> DeleteUser(int Id)
         {
-            var response = await _userService.DeleteUser(Id);
+            ServiceResponse<GetUserDto> response = await _userService.DeleteUser(Id);
             if (response.Success)
             {
                 return Ok(response);

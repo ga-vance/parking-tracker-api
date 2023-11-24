@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+using System.Globalization;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using ParkingTrackerAPI.Data;
@@ -29,6 +31,12 @@ namespace ParkingTrackerAPI.Services.UserService
                 serviceResponse.Message = "Password must be 8 characters or longer";
                 return serviceResponse;
             }
+            if (!IsValidEmail(user.Email))
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Invalid email address";
+                return serviceResponse;
+            }
             // Validate unique email
             var checkUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == newUser.Email);
             if (checkUser is not null)
@@ -43,8 +51,12 @@ namespace ParkingTrackerAPI.Services.UserService
             {
                 username += matchingUsers.Count;
             }
+            user.UserName = username.ToLower();
+            user.FirstName.ToLower();
+            user.LastName.ToLower();
+            user.Email.ToLower();
+
             // Add password hashing
-            user.UserName = username;
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.Password);
             // Save new user
             try
@@ -82,14 +94,71 @@ namespace ParkingTrackerAPI.Services.UserService
             return serviceResponse;
         }
 
-        // public async Task<ServiceResponse<List<GetUserDto>>> GetAllUsers()
-        // {
-        //     throw new NotImplementedException();
-        // }
+        public async Task<ServiceResponse<List<GetUserDto>>> GetAllUsers()
+        {
+            var serviceResponse = new ServiceResponse<List<GetUserDto>>();
+            var users = await _context.Users.ToListAsync();
+            serviceResponse.Data = users.Select(u => _mapper.Map<GetUserDto>(u)).ToList();
+            return serviceResponse;
+        }
 
-        // public async Task<ServiceResponse<GetUserDto>> GetUserById(int Id)
-        // {
-        //     throw new NotImplementedException();
-        // }
+        public async Task<ServiceResponse<GetUserDto>> GetUserById(int Id)
+        {
+            var serviceResponse = new ServiceResponse<GetUserDto>();
+            var user = await _context.Users.FindAsync(Id);
+            if (user is null)
+            {
+                serviceResponse.Success = false;
+                serviceResponse.Message = "Not Found";
+                return serviceResponse;
+            }
+            serviceResponse.Data = _mapper.Map<GetUserDto>(user);
+            return serviceResponse;
+
+        }
+
+        private bool IsValidEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return false;
+
+            try
+            {
+                // Normalize the domain
+                email = Regex.Replace(email, @"(@)(.+)$", DomainMapper,
+                                      RegexOptions.None, TimeSpan.FromMilliseconds(200));
+
+                // Examines the domain part of the email and normalizes it.
+                string DomainMapper(Match match)
+                {
+                    // Use IdnMapping class to convert Unicode domain names.
+                    var idn = new IdnMapping();
+
+                    // Pull out and process domain name (throws ArgumentException on invalid)
+                    string domainName = idn.GetAscii(match.Groups[2].Value);
+
+                    return match.Groups[1].Value + domainName;
+                }
+            }
+            catch (RegexMatchTimeoutException e)
+            {
+                return false;
+            }
+            catch (ArgumentException e)
+            {
+                return false;
+            }
+
+            try
+            {
+                return Regex.IsMatch(email,
+                    @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
+                    RegexOptions.IgnoreCase, TimeSpan.FromMilliseconds(250));
+            }
+            catch (RegexMatchTimeoutException)
+            {
+                return false;
+            }
+        }
     }
 }
