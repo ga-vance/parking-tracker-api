@@ -1,4 +1,5 @@
 using AutoMapper;
+using ParkingTrackerAPI.Dtos.Lot;
 using ParkingTrackerAPI.Dtos.User;
 using ParkingTrackerAPI.Models;
 
@@ -11,6 +12,8 @@ namespace ParkingTrackerAPI
             CreateMap<AddUserDto, User>();
             CreateMap<User, GetUserDto>();
             CreateMap<UpdateUserDto, User>();
+            CreateMap<AddLotDto, Lot>();
+            CreateMap<Lot, GetLotDto>();
         }
     }
 }

@@ -19,8 +19,8 @@ namespace ParkingTrackerAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<ServiceResponse<List<GetUserDto>>>> GetAllUsers()
         {
-            ServiceResponse<List<GetUserDto>> serviceResponse = await _userService.GetAllUsers();
-            return Ok(serviceResponse);
+            ServiceResponse<List<GetUserDto>> response = await _userService.GetAllUsers();
+            return Ok(response);
         }
 
         [HttpGet("{Id}")]

@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using ParkingTrackerAPI.Data;
+using ParkingTrackerAPI.Services.LotService;
 using ParkingTrackerAPI.Services.UserService;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILotService, LotService>();
 
 var app = builder.Build();
 
