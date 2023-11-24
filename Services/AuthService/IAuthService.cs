@@ -1,3 +1,4 @@
+using ParkingTrackerAPI.Dtos.Authorization;
 using ParkingTrackerAPI.Models;
 
 namespace ParkingTrackerAPI.Services.AuthService

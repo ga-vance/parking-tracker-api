@@ -12,7 +12,7 @@ namespace ParkingTrackerAPI.Models
 
         public string LastName { get; set; } = null!;
 
-        public string Password { get; set; } = null!;
+        public string PasswordHash { get; set; } = null!;
 
         public bool IsAdmin { get; set; } = false;
 
