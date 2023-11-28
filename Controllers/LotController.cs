@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ParkingTrackerAPI.Dtos.Lot;
 using ParkingTrackerAPI.Models;
@@ -6,6 +7,7 @@ using ParkingTrackerAPI.Services.LotService;
 namespace ParkingTrackerAPI.Controllers
 {
     [ApiController]
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     public class LotController : ControllerBase
     {

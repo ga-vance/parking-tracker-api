@@ -1,6 +1,5 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
@@ -28,7 +27,7 @@ namespace ParkingTrackerAPI.Services.AuthService
         public async Task<ServiceResponse<string>> Login(LoginUserDto request)
         {
             var serviceResponse = new ServiceResponse<string>();
-            var user = await _context.Users.SingleAsync(u => u.UserName == request.UserName);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == request.UserName);
             if (user is null)
             {
                 serviceResponse.Success = false;
@@ -56,13 +55,15 @@ namespace ParkingTrackerAPI.Services.AuthService
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
+                new Claim("Id", user.UserId.ToString()),
+                new Claim(ClaimTypes.Role, user.IsAdmin? "Admin" : "User")
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 _configuration.GetSection("AppSettings:Token").Value!
             ));
 
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
 
             var token = new JwtSecurityToken(
                 claims: claims,
