@@ -16,12 +16,14 @@ namespace ParkingTrackerAPI.Services.AuthService
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(IMapper mapper, ApplicationDbContext context, IConfiguration configuration)
+        public AuthService(IMapper mapper, ApplicationDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<ServiceResponse<string>> Login(LoginUserDto request)
@@ -45,9 +47,41 @@ namespace ParkingTrackerAPI.Services.AuthService
             return serviceResponse;
         }
 
-        public Task<ServiceResponse<GetUserDto>> UpdatePassword(UpdateUserPasswordDto request)
+        public async Task<ServiceResponse<GetUserDto>> UpdatePassword(UpdateUserPasswordDto request)
         {
-            throw new NotImplementedException();
+            var serviceResponse = new ServiceResponse<GetUserDto>();
+            var claimId = _httpContextAccessor?.HttpContext?.User.FindFirstValue("Id");
+            if (claimId is not null)
+            {
+                if (claimId != request.UserId.ToString())
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Forbidden Request";
+                    return serviceResponse;
+                }
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == request.UserId);
+                if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, user!.PasswordHash))
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = "Wrong Password";
+                    return serviceResponse;
+                }
+                try
+                {
+                    user!.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                    await _context.SaveChangesAsync();
+                    serviceResponse.Data = _mapper.Map<GetUserDto>(user);
+                    return serviceResponse;
+                }
+                catch (Exception e)
+                {
+                    serviceResponse.Success = false;
+                    serviceResponse.Message = e.Message;
+                    return serviceResponse;
+                }
+            }
+
+            return serviceResponse;
         }
 
         private string CreateToken(User user)
@@ -67,7 +101,7 @@ namespace ParkingTrackerAPI.Services.AuthService
 
             var token = new JwtSecurityToken(
                 claims: claims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddHours(2),
                 signingCredentials: creds
             );
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ParkingTrackerAPI.Dtos.Authorization;
 using ParkingTrackerAPI.Dtos.User;
@@ -28,6 +29,17 @@ namespace ParkingTrackerAPI.Controllers
             return BadRequest(response);
         }
 
-        // [HttpPatch]
+        [HttpPatch]
+        [Authorize]
+
+        public async Task<ActionResult<ServiceResponse<GetUserDto>>> UpdatePassword(UpdateUserPasswordDto request)
+        {
+            ServiceResponse<GetUserDto> response = await _authService.UpdatePassword(request);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
     }
 }
