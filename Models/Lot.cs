@@ -7,7 +7,7 @@ namespace ParkingTrackerAPI.Models
 
         public string LotCode { get; set; } = null!;
 
-        public string Name { get; set; } = null!;
+        public string LotName { get; set; } = null!;
 
         public string City { get; set; } = null!;
 
