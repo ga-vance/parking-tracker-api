@@ -43,35 +43,35 @@ namespace ParkingTrackerAPI.Data
                 {
                     LotId = 1,
                     LotCode = "STRCH",
-                    Name = "Strathcona Community Hospital",
+                    LotName = "Strathcona Community Hospital",
                     City = "Sherwood Park"
                 },
                 new Lot
                 {
                     LotId = 2,
                     LotCode = "LCH",
-                    Name = "Leduc Community Hospital",
+                    LotName = "Leduc Community Hospital",
                     City = "Leduc"
                 },
                 new Lot
                 {
                     LotId = 3,
                     LotCode = "NECHC",
-                    Name = "Northeast Community Health Centre",
+                    LotName = "Northeast Community Health Centre",
                     City = "Edmonton"
                 },
                 new Lot
                 {
                     LotId = 4,
                     LotCode = "EEHC",
-                    Name = "East Edmonton Health Centre",
+                    LotName = "East Edmonton Health Centre",
                     City = "Edmonton"
                 },
                 new Lot
                 {
                     LotId = 5,
                     LotCode = "AHE",
-                    Name = "Alberta Hospital Edmonton",
+                    LotName = "Alberta Hospital Edmonton",
                     City = "Edmonton"
                 }
             );
