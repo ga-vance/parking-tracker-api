@@ -6,11 +6,11 @@ namespace ParkingTrackerAPI.Models
 
         public int VehicleId { get; set; }
 
-        public int? LotId { get; set; }
+        public int LotId { get; set; }
 
         public DateTime DateTime { get; set; }
 
-        public int? UserId { get; set; }
+        public int UserId { get; set; }
 
 
         // Navigation Links

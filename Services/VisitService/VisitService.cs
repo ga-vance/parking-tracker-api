@@ -1,4 +1,3 @@
-using ParkingTrackerAPI.Dtos.Vehicle;
 using ParkingTrackerAPI.Dtos.Visit;
 using ParkingTrackerAPI.Models;
 
@@ -11,7 +10,7 @@ namespace ParkingTrackerAPI.Services.VisitService
             throw new NotImplementedException();
         }
 
-        public Task<ServiceResponse<List<GetVisitDto>>> GetVisitsByPlate(VehicleDto vehicle)
+        public Task<ServiceResponse<List<GetVisitDto>>> GetVisitsByPlate(string plateNumber, string plateRegion)
         {
             throw new NotImplementedException();
         }
