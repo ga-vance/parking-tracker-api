@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using AutoMapper;
-using AutoMapper.Internal.Mappers;
 using Microsoft.EntityFrameworkCore;
 using ParkingTrackerAPI.Data;
 using ParkingTrackerAPI.Dtos.Visit;
@@ -27,10 +26,10 @@ namespace ParkingTrackerAPI.Services.VisitService
             var userId = Int32.Parse(_httpContextAccessor.HttpContext!.User.FindFirstValue("Id")!);
             var visit = _mapper.Map<Visit>(newVisit);
             visit.UserId = userId;
-            visit.DateTime = DateTime.Now;
+            visit.DateTime = DateTime.UtcNow;
             var dbVehicle = await _context.Vehicles.FirstOrDefaultAsync(
-                v => v.PlateNumber == newVisit.PlateNumber
-                && v.PlateRegion == newVisit.PlateRegion);
+                v => v.PlateNumber == newVisit.PlateNumber.ToUpper()
+                && v.PlateRegion == newVisit.PlateRegion.ToUpper());
             if (dbVehicle is null)
             {
                 var newVehicle = new Vehicle
@@ -39,25 +38,19 @@ namespace ParkingTrackerAPI.Services.VisitService
                     PlateRegion = newVisit.PlateRegion.ToUpper()
                 };
                 visit.Vehicle = newVehicle;
-                try
-                {
-                    _context.Visits.Add(visit);
-                    await _context.SaveChangesAsync();
-                    serviceResponse.Data = _mapper.Map<GetVisitDto>(visit);
-                    return serviceResponse;
-                }
-                catch (Exception ex)
-                {
-                    serviceResponse.Success = false;
-                    serviceResponse.Message = ex.Message;
-                    return serviceResponse;
-                }
+            }
+            else
+            {
+                visit.VehicleId = dbVehicle.VehicleId;
             }
             try
             {
-                visit.VehicleId = dbVehicle.VehicleId;
                 _context.Visits.Add(visit);
                 await _context.SaveChangesAsync();
+                visit = await _context.Visits
+                    .Include(v => v.Vehicle)
+                    .Include(v => v.Lot)
+                    .FirstOrDefaultAsync(v => v.VisitId == visit.VisitId);
                 serviceResponse.Data = _mapper.Map<GetVisitDto>(visit);
                 return serviceResponse;
             }
@@ -78,6 +71,7 @@ namespace ParkingTrackerAPI.Services.VisitService
                 var visits = await _context.Visits
                     .Include(v => v.Vehicle)
                     .Where(v => v.Vehicle.PlateNumber == plateNumber.ToUpper() && v.Vehicle.PlateRegion == plateRegion.ToUpper())
+                    .Include(v => v.Lot)
                     .ToListAsync();
                 serviceResponse.Data = visits.Select(v => _mapper.Map<GetVisitDto>(v)).ToList();
                 return serviceResponse;
