@@ -53,9 +53,9 @@ namespace ParkingTrackerAPI.Services.VisitService
                     return serviceResponse;
                 }
             }
-            visit.VehicleId = dbVehicle.VehicleId;
             try
             {
+                visit.VehicleId = dbVehicle.VehicleId;
                 _context.Visits.Add(visit);
                 await _context.SaveChangesAsync();
                 serviceResponse.Data = _mapper.Map<GetVisitDto>(visit);
