@@ -94,7 +94,7 @@ namespace ParkingTrackerAPI.Services.AuthService
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-                _configuration.GetSection("AppSettings:Token").Value!
+                Environment.GetEnvironmentVariable("SIGNING_TOKEN")!
             ));
 
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
