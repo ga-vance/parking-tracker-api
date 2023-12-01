@@ -22,14 +22,22 @@ namespace ParkingTrackerAPI.Controllers
         public async Task<ActionResult<ServiceResponse<List<GetVisitDto>>>> GetVisitsByPlate(string plateNumber, string plateRegion)
         {
             ServiceResponse<List<GetVisitDto>> response = await _visitService.GetVisitsByPlate(plateNumber, plateRegion);
-            return Ok(response);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, response);
         }
 
         [HttpPost]
         public async Task<ActionResult<ServiceResponse<GetVisitDto>>> AddVisit(AddVisitDto newVisit)
         {
             ServiceResponse<GetVisitDto> response = await _visitService.AddVisit(newVisit);
-            return Ok(response);
+            if (response.Success)
+            {
+                return Ok(response);
+            }
+            return StatusCode(StatusCodes.Status500InternalServerError, response);
         }
     }
 }
