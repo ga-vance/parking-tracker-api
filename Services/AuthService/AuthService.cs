@@ -15,14 +15,12 @@ namespace ParkingTrackerAPI.Services.AuthService
     {
         private readonly ApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthService(IMapper mapper, ApplicationDbContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IMapper mapper, ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _mapper = mapper;
-            _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
 

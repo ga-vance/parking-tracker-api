@@ -31,7 +31,6 @@ namespace ParkingTrackerAPI.Controllers
 
         [HttpPatch]
         [Authorize]
-
         public async Task<ActionResult<ServiceResponse<GetUserDto>>> UpdatePassword(UpdateUserPasswordDto request)
         {
             ServiceResponse<GetUserDto> response = await _authService.UpdatePassword(request);
