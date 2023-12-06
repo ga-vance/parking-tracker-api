@@ -2,7 +2,7 @@
 
 Parking Tracker API is a .NET back-end project written in C#. It allows registered users to track visits to designated parking lots. There is a corresponding front-end project which will facilitate interaction with this API.
 
-[Front-end Coming Soon](https://github.com/ga-vance/parking-tracker-api)
+[Frontend Under Construction](https://github.com/ga-vance/parking-tracker-frontend)
 
 ## Get Started
 
