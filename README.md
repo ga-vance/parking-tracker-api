@@ -4,6 +4,10 @@ Parking Tracker API is a .NET back-end project written in C#. It allows register
 
 [Frontend Under Construction](https://github.com/ga-vance/parking-tracker-frontend)
 
+Built with:
+
+[<img src="./Design/csharp.png" width=20>](https://learn.microsoft.com/en-us/dotnet/csharp/) [<img src="./Design/dotnet.png" width=20>](https://dotnet.microsoft.com/en-us/) [<img src="./Design/postgres.png" width=20>](https://www.postgresql.org)
+
 ## Get Started
 
 #### You will need:
